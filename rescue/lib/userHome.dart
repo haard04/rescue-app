@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:rescue/API/APIService.dart';
+import 'package:rescue/AgencyWidget.dart';
+import 'package:rescue/models/Agency.dart';
 
-class adminPanel extends StatelessWidget {
-  const adminPanel({Key? key}) : super(key: key);
+class userHomePage extends StatelessWidget {
+  List<Agency>agencies;
+   userHomePage(this.agencies,{Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    
+   
+    return Scaffold(
+      appBar: AppBar(
+        
+      ),
+
+    body: Container(
+
+      
+      child:ListView.builder(
+      itemCount: agencies.length,
+      itemBuilder: (context, index) {
+        return agencyDetail(agencies[index]);
+      },
+    )
+    ),
+    );
   }
 }

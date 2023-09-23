@@ -8,9 +8,7 @@ class Agency {
   final String city;
   final String contactNumber;
   final String state;
-  final String id;
   final int uid;
-  final bool? verified;
   final bool? availability;
   
 
@@ -24,9 +22,7 @@ class Agency {
     required this.city,
     required this.contactNumber,
     required this.state,
-    required this.id,
     required this.uid,
-    this.verified,
     this.availability,
     
   });
@@ -42,9 +38,7 @@ class Agency {
       city: json['city'],
       contactNumber: json['contactNumber'],
       state: json['state'],
-      id: json['id'],
       uid: json['uid'],
-      verified: json['verified'],
       availability: json['availability'],
     );
   }
@@ -60,9 +54,7 @@ class Agency {
       'city': city,
       'contactNumber': contactNumber,
       'state': state,
-      'id': id,
       'uid': uid,
-      'verified' : verified ,
       'availability': availability,
     };
   }

@@ -104,7 +104,7 @@ void initState() {
   bool isContactNumberValid = true;
   bool isAddressValid = true;
   bool isCityValid = true;
-
+   bool showOtherTextField = false;
   bool isCategoryValid = true;
   bool isUIDValid = true;
   bool isPasswordValid = true;
@@ -138,7 +138,7 @@ void initState() {
       // Implement signup logic here
         getUserLocation();
         
-      Agency agency = Agency(name: nameController.text, address: addressController.text, categories: categories, resources: [], latitude:latitude , longitude: longitude, city: city, contactNumber: contactNumberController.text, state: state, id: '', uid: 1);
+      Agency agency = Agency(name: nameController.text, address: addressController.text, categories: categories, resources: [], latitude:latitude , longitude: longitude, city: city, contactNumber: contactNumberController.text, state: state,uid: 6969);
 
 
       // Show a success dialog
@@ -220,10 +220,10 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
-        backgroundColor: const Color(0xff222222),
+        
       ),
       body: Container(
-        color: const Color(0xff505050),
+        
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
@@ -297,55 +297,62 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                 cursorColor: Color(0xff000000),
               ),
               
-              DropdownButtonFormField(
-                value: selectedCategory,
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCategory = newValue.toString();
-                  });
-                },
-                items: categories.map((category) {
-                  return DropdownMenuItem(
-                    value: category,
-                    child: Text(category),
-                  );
-                }).toList(),
-                decoration: const InputDecoration(
-                  labelText: 'Category*',
+             Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  'Category*',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xff000000),
+                  ),
                 ),
               ),
-              if (selectedCategory == 'Other')
+              // Use a ListView.builder to create checkboxes for categories
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return CheckboxListTile(
+                    title: Text(category),
+                    value: selectedOptions.contains(category),
+                    onChanged: (value) {
+                      setState(() {
+                        if (value != null) {
+                          if (value) {
+                            selectedOptions.add(category);
+                            if (category == 'Other') {
+                              showOtherTextField = true;
+                            }
+                          } else {
+                            selectedOptions.remove(category);
+                            if (category == 'Other') {
+                              showOtherTextField = false;
+                            }
+                          }
+                        }
+                      });
+                    },
+                  );
+                },
+              ),
+              // Conditionally show the "Other" text field
+              if (showOtherTextField)
                 TextField(
-                  controller: customCategoryController,
+                  controller: uidController,
                   decoration: InputDecoration(
-                    labelText: 'Custom Category*',
+                    labelText: 'Other*',
+                    errorText: isUIDValid ? null : 'This field is required',
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xff000000)),
                     ),
-                    errorText:
-                        isCategoryValid ? null : 'Custom category is required',
                   ),
                   style: const TextStyle(
-                    fontSize: 18, // Text font size
-                    color: Colors.black, // Text color
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
                   cursorColor: Color(0xff000000),
                 ),
-              TextField(
-                controller: uidController,
-                decoration: InputDecoration(
-                  labelText: 'UID*',
-                  errorText: isUIDValid ? null : 'UID is required',
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff000000)),
-                  ),
-                ),
-                style: const TextStyle(
-                  fontSize: 18, // Text font size
-                  color: Colors.black, // Text color
-                ),
-                cursorColor: Color(0xff000000),
-              ),
               TextField(
                 controller: passwordController,
                 obscureText: true,
