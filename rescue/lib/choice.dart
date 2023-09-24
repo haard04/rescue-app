@@ -68,7 +68,7 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                  
 
                   List<Agency>agencies;
-                  agencies=await fetchAgencies(await getUserLocation());
+                  agencies=await fetchAgencies('Gandhinagar');
                   Navigator.push(context,MaterialPageRoute(builder: (context) => userHomePage(agencies ),) );
                 }
     return Scaffold(

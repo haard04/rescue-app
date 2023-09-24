@@ -13,7 +13,8 @@ class userHomePage extends StatelessWidget {
    
     return Scaffold(
       appBar: AppBar(
-        
+        backgroundColor: Colors.red,
+        title: Text('Agency Near You',),
       ),
 
     body: Container(
