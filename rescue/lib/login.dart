@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:rescue/agencyHome.dart';
 import 'package:flutter/services.dart';
 import 'package:rescue/signup.dart';
 
 class AgencySignInPage extends StatefulWidget {
-  
-
   @override
   _AgencySignInPageState createState() => _AgencySignInPageState();
 }
 
 class _AgencySignInPageState extends State<AgencySignInPage> {
-  
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -20,18 +16,21 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
 
   void validateFields() {
     setState(() {
-      isMobileValid = mobileController.text.isNotEmpty;
+      isMobileValid = mobileController.text.isNotEmpty &&
+          mobileController.text.length == 10; // Check for 10 digits
       isPasswordValid = passwordController.text.isNotEmpty;
     });
   }
-  
+
   void navigateToNewPage(BuildContext context) {
     if (isMobileValid && isPasswordValid) {
       // Handle sign-in logic here
       // You can check the mobile number and password entered by the user
       // and navigate to the appropriate page if successful.
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => agencyHome()));
+        context,
+        MaterialPageRoute(builder: (context) => NewPage()),
+      );
     }
   }
 
@@ -40,12 +39,11 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Agency Sign In'),
-        backgroundColor: const Color(0xff222222),
+        backgroundColor: const Color(0xffd54339),
       ),
       body: Container(
-        // Wrap with Container for background color
         color:
-            const Color(0xff505050), // Set your desired background color here
+            const Color(0xffffffff), // Set your desired background color here
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -57,7 +55,7 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                   'Mobile Number*',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18, // Increase text size
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -66,19 +64,19 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                   onChanged: (value) {
                     validateFields();
                   },
+                  keyboardType: TextInputType.number,
                   inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly, // Allow only digits
-                    LengthLimitingTextInputFormatter(
-                        10), // Limit to 10 characters
+                    LengthLimitingTextInputFormatter(10),
+                    FilteringTextInputFormatter.digitsOnly,
                   ],
-                  keyboardType: TextInputType.number, // Show numeric keyboard
                   decoration: InputDecoration(
                     hintText: 'Enter your mobile number',
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Color(0xff000000)),
                     ),
-                    errorText:
-                        isMobileValid ? null : 'Mobile number is required',
+                    errorText: isMobileValid
+                        ? null
+                        : 'Enter a valid 10-digit mobile number',
                   ),
                   cursorColor: Color(0xff000000),
                 ),
@@ -87,7 +85,7 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                   'Password*',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18, // Increase text size
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -110,8 +108,7 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                 ElevatedButton(
                   onPressed: () {
                     validateFields();
-                    navigateToNewPage(
-                        context); // Pass context to navigate function
+                    navigateToNewPage(context);
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xffd54339),
@@ -120,16 +117,19 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                   child: const Text(
                     'Sign In',
                     style: TextStyle(
-                      fontSize: 18, // Increase button text size
+                      fontSize: 18,
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
-                    // Navigate to the sign-up page
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignUpPage(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xffd54339),
@@ -138,7 +138,7 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
                   child: const Text(
                     'Sign Up',
                     style: TextStyle(
-                      fontSize: 18, // Increase button text size
+                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
@@ -159,3 +159,20 @@ class _AgencySignInPageState extends State<AgencySignInPage> {
   }
 }
 
+class NewPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('New Page'),
+        backgroundColor: const Color(0xffd54339),
+      ),
+      body: Container(
+        color: const Color(0xffffffff),
+        child: const Center(
+          child: Text('You have successfully signed in!'),
+        ),
+      ),
+    );
+  }
+}

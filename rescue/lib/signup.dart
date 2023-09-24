@@ -1,61 +1,10 @@
-// import 'package:flutter/material.dart';
-// import './API/APIService.dart';
-
-// class adminPanel extends StatelessWidget {
-//   const adminPanel({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final AgencyService agencyService = AgencyService('https://your-api-base-url.com');
-
-//     String name = '';
-//   String address = '';
-//   List<String> categories = [];
-//   List<String> resources = [];
-//   double latitude = 0.0;
-//   double longitude = 0.0;
-//   String city = '';
-//   String contactNumber = '';
-//   String state = '';
-//   String id = '';
-//   int uid = 0;
-//   bool? availability;
-//     return Container(
-//       child: Container(
-//         child: ElevatedButton(onPressed: (){
-//          // Navigator.push(context, MaterialPageRoute(builder: (context) => adminPanel(),));
-//          final agencyData = {
-//                       'name': name,
-//                       'address': address,
-//                       'categories': categories,
-//                       'resources': resources,
-//                       'latitude': latitude,
-//                       'longitude': longitude,
-//                       'city': city,
-//                       'contactNumber': contactNumber,
-//                       'state': state,
-//                       'id': id,
-//                       'uid': uid,
-//                       'availability': availability,
-//                     };
-
-//                     // Call the postAgency method from your service class
-//                     agencyService.postAgency(agencyData);
-                
-         
-//         }, child: Text('Sign up')),
-//       ),
-//     );
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rescue/agencyHome.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rescue/models/Agency.dart';
+import './API/APIService.dart';
 
 
 
@@ -82,10 +31,10 @@ void initState() {
   String selectedCategory = 'Fire and Emergency Services'; // Default category
   final TextEditingController customCategoryController =
       TextEditingController();
-  final TextEditingController uidController = TextEditingController();
+  final TextEditingController resourceController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   List<String> selectedOptions = [];
-
+  List<String> resourceList=[];
 
   double latitude=0;
   double longitude=0;
@@ -103,7 +52,6 @@ void initState() {
   bool isNameValid = true;
   bool isContactNumberValid = true;
   bool isAddressValid = true;
-  bool isCityValid = true;
    bool showOtherTextField = false;
   bool isCategoryValid = true;
   bool isUIDValid = true;
@@ -115,34 +63,54 @@ void initState() {
       isContactNumberValid = contactNumberController.text.isNotEmpty &&
           contactNumberController.text.length == 10;
       isAddressValid = addressController.text.isNotEmpty;
-      isCityValid = cityController.text.isNotEmpty;
       
       bool isOtherSelected = selectedCategory == 'Other';
       isCategoryValid =
           isOtherSelected ? customCategoryController.text.isNotEmpty : true;
-      isUIDValid = uidController.text.isNotEmpty;
+      
       isPasswordValid = passwordController.text.isNotEmpty;
     });
   }
 
-  void signUp(BuildContext context,) {
-    validateFields();
+  Future<void> signUp() async {
 
-    if (isNameValid &&
-        isContactNumberValid &&
-        isAddressValid &&
-        isCityValid &&
-        isCategoryValid &&
-        isUIDValid &&
-        isPasswordValid) {
-      // Implement signup logic here
-        getUserLocation();
+    final agencyService = AgencyService();
+  //  validateFields();
+
+    // if (isNameValid &&
+    //     isContactNumberValid &&
+    //     isAddressValid &&
+    //     isCategoryValid &&
         
-      Agency agency = Agency(name: nameController.text, address: addressController.text, categories: categories, resources: [], latitude:latitude , longitude: longitude, city: city, contactNumber: contactNumberController.text, state: state,uid: 6969);
+    //     isPasswordValid) {
+      // Implement signup logic here
+        await getUserLocation();
+        String resources = resourceController.text;
+        resourceList=resources.split(',');
+        print(resourceList);
 
 
-      // Show a success dialog
-      showDialog(
+      Agency agency = Agency(name: nameController.text, address: addressController.text, categories: selectedOptions, resources: resourceList, latitude:latitude , longitude: longitude, city: city, contactNumber: contactNumberController.text, state: state,uid: DateTime.now().millisecondsSinceEpoch,availability: true);
+
+      print(agency.toJson());
+
+        try{
+          agencyService.postAgency(agency);
+            
+            
+            
+        }
+        catch(err){
+          showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text(
+                'Your request has failed.'),
+          );});
+        }
+        return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -161,7 +129,7 @@ void initState() {
                   selectedCategory =
                       'Fire and Emergency Services'; // Reset to default category
                   customCategoryController.clear();
-                  uidController.clear();
+                  resourceController.clear();
                   passwordController.clear();
 
                   Navigator.of(context).pop(); // Close the dialog
@@ -172,7 +140,7 @@ void initState() {
         },
       );
     }
-  }
+  
 
 
 
@@ -281,21 +249,6 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                 ),
                 cursorColor: Color(0xff000000),
               ),
-              TextField(
-                controller: cityController,
-                decoration: InputDecoration(
-                  labelText: 'City*',
-                  errorText: isCityValid ? null : 'City is required',
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff000000)),
-                  ),
-                ),
-                style: const TextStyle(
-                  fontSize: 18, // Text font size
-                  color: Colors.black, // Text color
-                ),
-                cursorColor: Color(0xff000000),
-              ),
               
              Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -321,14 +274,7 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                         if (value != null) {
                           if (value) {
                             selectedOptions.add(category);
-                            if (category == 'Other') {
-                              showOtherTextField = true;
-                            }
-                          } else {
-                            selectedOptions.remove(category);
-                            if (category == 'Other') {
-                              showOtherTextField = false;
-                            }
+                            
                           }
                         }
                       });
@@ -337,22 +283,22 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                 },
               ),
               // Conditionally show the "Other" text field
-              if (showOtherTextField)
+             
                 TextField(
-                  controller: uidController,
-                  decoration: InputDecoration(
-                    labelText: 'Other*',
-                    errorText: isUIDValid ? null : 'This field is required',
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xff000000)),
-                    ),
+                controller: resourceController,
+                decoration: InputDecoration(
+                  labelText: 'Resources(Separated by commas)*',
+                  errorText: isNameValid ? null : 'Resources is required',
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff000000)),
                   ),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                  cursorColor: Color(0xff000000),
                 ),
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+                cursorColor: Color(0xff000000),
+              ),
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -372,8 +318,8 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  getUserLocation();
-                 // signUp(context); // Pass context to signUp function
+                  // getUserLocation();
+                  signUp(); // Pass context to signUp function
                 },
                 child: const Text('Sign Up'),
                 style: ElevatedButton.styleFrom(

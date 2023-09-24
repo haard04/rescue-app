@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rescue/adminPanel.dart';
 import 'package:rescue/agencyHome.dart';
+import 'package:rescue/login.dart';
 import 'package:rescue/models/Agency.dart';
 import 'package:rescue/signup.dart';
 import 'package:rescue/userHome.dart';
@@ -71,10 +72,56 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
                   agencies=await fetchAgencies('Gandhinagar');
                   Navigator.push(context,MaterialPageRoute(builder: (context) => userHomePage(agencies ),) );
                 }
+    
+     Future<void> _showPasswordInputDialog(BuildContext context) async {
+    String enteredPassword = '';
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Admin Login'),
+          content: TextField(
+            obscureText: true,
+            onChanged: (value) {
+              enteredPassword = value;
+            },
+            decoration: InputDecoration(
+              hintText: 'Enter Password',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Submit'),
+              onPressed: () {
+                // Replace 'your_admin_password' with the actual admin password
+                if (enteredPassword == 'admin') {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminDashboardPage(),));// Navigate to admin dashboard
+                } else {
+                  // Handle incorrect password here, show an error message, etc.
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Wellcome To LifeLineResQ'),
-        backgroundColor: Colors.red,
+        title: Text('Welcome To LifeLineResQ',
+        style: TextStyle(color: Colors.white),),
+        backgroundColor:Color(0xffd54339),
       ),
       body: Container(
         
@@ -98,7 +145,7 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (context) => SignUpPage(),) );},
+                onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (context) => AgencySignInPage(),) );},
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xffd54339),
                   minimumSize: Size(220, 70),
@@ -111,7 +158,8 @@ List<Placemark> placemarks = await placemarkFromCoordinates(
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,MaterialPageRoute(builder: (context) => AdminSignInPage(),) );
+                   _showPasswordInputDialog(
+                      context);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xffd54339),

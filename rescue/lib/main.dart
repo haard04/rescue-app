@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
      
       theme: ThemeData(
         
-        primaryColor: Colors.red,
+        primaryColor: Color(0xffd54339),
 
         useMaterial3: true,
       ),

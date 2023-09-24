@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class AdminSignInPage extends StatefulWidget {
   @override
   _AdminSignInPageState createState() => _AdminSignInPageState();
@@ -24,11 +22,16 @@ class _AdminSignInPageState extends State<AdminSignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin'),
-        backgroundColor: Color(0xff222222),
+        title: Text(
+          'Admin',
+          style: TextStyle(
+            color: Colors.white, // Set the text color to white
+          ),
+        ),
+        backgroundColor: Color(0xffd54339),
       ),
       body: Container(
-        color: const Color(0xff505050),
+        color: const Color(0xffffffff),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -101,11 +104,11 @@ class AdminDashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Dashboard'),
-        backgroundColor: Color(0xff222222),
+        title: Text('Admin Dashboard',style: TextStyle(color: Colors.white),),
+        backgroundColor: Color(0xffd54339),
       ),
       body: Container(
-        color: const Color(0xff505050),
+        color: const Color(0xffffffff),
         child: Center(
           child: Text('Welcome to the Admin Dashboard!'),
         ),

@@ -13,8 +13,8 @@ class userHomePage extends StatelessWidget {
    
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text('Agency Near You',),
+        backgroundColor: Color(0xffd54339),
+        title: Text('Agency Near You',style: TextStyle(color: Colors.white),),
       ),
 
     body: Container(
@@ -26,7 +26,9 @@ class userHomePage extends StatelessWidget {
         return agencyDetail(agencies[index]);
       },
     )
+    
     ),
+    
     );
   }
 }

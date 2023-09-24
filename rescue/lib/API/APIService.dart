@@ -3,23 +3,47 @@ import 'package:http/http.dart' as http;
 import 'package:rescue/models/Agency.dart';
 
 class AgencyService {
-  final String baseUrl; 
+  
 
-  AgencyService(this.baseUrl);
+  Future<bool> postAgency(Agency agencyData) async {
+    final headers = <String, String>{
+    'Content-Type': 'application/json; charset=UTF-8',
+  };
 
-  Future<Map<String, dynamic>> postAgency(Map<String, dynamic> agencyData) async {
+    final baseUrl = 'https://rescue.onrender.com/';
     final response = await http.post(
-      Uri.parse('$baseUrl/agency'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(agencyData),
-    );
+      Uri.parse(baseUrl),
+
+      
+      
+      body: jsonEncode(
+      {
+      "name": " fire station",
+      "address": "Address for Gandhinagar Fire and Emergency Services",
+      "categories": ["Fire and Emergency Services"],
+      "resources": ["Fire Trucks", "Ambulances", "Rescue Equipment"],
+      "latitude": 23.222222,
+      "longitude": 72.638889,
+      "city": "Gandhinagar",
+      "contactNumber": "Contact Number for Gandhinagar Fire and Emergency Services",
+      "state": "State for Gandhinagar Fire and Emergency Services",
+       "uid": 1221,
+      "availability": true,
+      "password": "1234",
+      "verified":true
+      }
+    ));
+    print(response.body);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      print(response.body);
+      
+      return true;
+
     } else {
-      throw Exception('Failed to post agency data');
+      print(response.statusCode);
+      // throw Exception('Failed to post agency data');
+      return false;
     }
   }
 }
